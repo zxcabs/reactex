@@ -5,6 +5,9 @@
 
 var
     React = require('react'),
-    Site = require('../site');
+    Site = require('../site'),
+    api = require('api');
 
-React.renderComponent(Site({ name: 'user' }), document.getElementById('content'));
+api.getName(function (err, name) {
+    React.renderComponent(Site({ name: name }), document.getElementById('content'));
+});

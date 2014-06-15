@@ -8,6 +8,6 @@ var
 
 module.exports = React.createClass({
     render: function () {
-        return DOM.div(null, 'hello ' + this.props.name)
+        return DOM.div(null, 'hello ' + this.props.name);
     }
 });
