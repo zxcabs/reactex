@@ -28,20 +28,13 @@ appServer.use('/api', apiServer);
 
 appServer.get('/app/App.js', function (req, res, next) {
     res.setHeader('Content-Type', 'text/javascript');
+
     browserify()
         .transform(literalify.configure({
-            react: 'window.React',
-            api: 'window.api'
+            react: 'window.React'
         }))
-        .require('./app/App.js')
-        .bundle()
-        .pipe(res)
-});
-
-appServer.get('/js/api.js', function (req, res, next) {
-    res.setHeader('Content-Type', 'text/javascript');
-    browserify()
-        .require('./api')
+        .require('./app/App.js', { expose: 'App' })
+        .require('./app/api', { expose: 'api' })
         .bundle()
         .pipe(res)
 });
@@ -59,13 +52,11 @@ appServer.get('/', function (req, res, next) {
                 '</head>' +
                 '<body>' +
                     '<div id="content">' + React.renderComponentToString(viewApp({ app: state })) + '</div>' +
-                    '<script src="/js/api.js"></script>' +
                     '<script src="/app/App.js"></script>' +
                     '<script>' +
-                       'window.api = require("./api");' +
                        '(function () {' +
                             'var ' +
-                                'App = require("./app/App.js"),' +
+                                'App = require("App"),' +
                                 'app = new App(' + JSON.stringify(state) + ');' +
 
                             'app.render(document.getElementById("content"));' +

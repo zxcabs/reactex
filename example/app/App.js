@@ -22,10 +22,12 @@ App.prototype.init = Promise.method(function () {
     var
         self = this;
 
-    return this.user || api('get.user')
+    self.__init = self.__init || (self.user || api('get.user')
         .then(function (user) {
             self.user = user;
-        });
+        }));
+
+    return self.__init;
 });
 
 App.prototype.getState = Promise.method(function () {
