@@ -35,6 +35,7 @@ appServer.get('/app/App.js', function (req, res, next) {
         }))
         .require('./app/App.js', { expose: 'App' })
         .require('./app/api', { expose: 'api' })
+        .add('./app/main.js')
         .bundle()
         .pipe(res)
 });
@@ -42,33 +43,13 @@ appServer.get('/app/App.js', function (req, res, next) {
 appServer.get('/', function (req, res, next) {
 
     (new App())
-        .getState()
-        .then(function (state) {
+        .init()
+        .then(function (app) {
             res.setHeader('Content-Type', 'text/html');
-            res.end('<!doctype html>' +
-                '<html>' +
-                '<head>' +
-                    '<script src="http://fb.me/react-0.10.0.js"></script>' +
-                '</head>' +
-                '<body>' +
-                    '<div id="content">' + React.renderComponentToString(viewApp({ app: state })) + '</div>' +
-                    '<script src="/app/App.js"></script>' +
-                    '<script>' +
-                       '(function () {' +
-                            'var ' +
-                                'App = require("App"),' +
-                                'app = new App(' + JSON.stringify(state) + ');' +
-
-                            'app.render(document.getElementById("content"));' +
-                        '})();' +
-                    '</script>' +
-                '</body>' +
-                '</html>'
-            );
+            res.end('<!doctype html>' + app.renderToString());
         });
 
 });
-
 
 appServer.listen(PORT, function (err) {
     if (err) return console.log('error: ', err);

@@ -10,36 +10,25 @@ var
     React = require('react'),
     appView = require('./view/app.js');
 
-function App(opt) {
-    opt = opt || {};
+function App(state) {
+    state = state || {};
 
-    this.user = opt.user;
-
-    this.init();
+    this.state = state || {
+        title: 'My app'
+    };
 }
 
 App.prototype.init = Promise.method(function () {
     var
         self = this;
 
-    self.__init = self.__init || (self.user || api('get.user')
+    self.__init = self.__init || (self.state.user || api('get.user')
         .then(function (user) {
-            self.user = user;
+            self.state.user = user;
+            return self;
         }));
 
     return self.__init;
-});
-
-App.prototype.getState = Promise.method(function () {
-    var
-        self = this;
-
-    return this.init()
-        .then(function () {
-            return {
-                user: self.user
-            };
-        });
 });
 
 App.prototype.updateUser = function () {
@@ -48,7 +37,7 @@ App.prototype.updateUser = function () {
 
     return api('get.user')
         .then(function (user) {
-            self.user = user;
+            self.state.user = user;
             return user;
         });
 };
@@ -61,4 +50,8 @@ App.prototype.render = function (container) {
         .then(function () {
             React.renderComponent(appView({ app: self }), container);
         });
+};
+
+App.prototype.renderToString = function () {
+    return  React.renderComponentToString(appView({ app: this }));
 };

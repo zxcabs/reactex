@@ -23,6 +23,7 @@
   "dependencies": {
     "bluebird": "^2.1.1",
     "browserify": "^4.1.10",
+    "browserify-middleware": "^3.0.0",
     "envify": "^1.2.1",
     "express": "^4.4.3",
     "literalify": "^0.3.0",
